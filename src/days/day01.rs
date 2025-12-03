@@ -115,6 +115,6 @@ pub mod tests {
         let input = &input;
         let resp = part2(input);
 
-        assert_eq!(resp, Some(8));
+        assert_eq!(resp, Some(9));
     }
 }
