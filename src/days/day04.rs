@@ -89,45 +89,44 @@ pub fn part2(input: &Input) -> Option<u64> {
     let mut sum = 0;
 
     let total = input.grid.len();
-    let width = input.len;
-    let height = total / input.len;
+    let width = input.len as i32;
+    let height = (total / input.len) as i32;
 
     let mut input = input.clone();
-    loop {
-        let mut removable = 0;
-        let mut i = 0;
-        while i < total {
-            let cell = &mut input.grid[i];
-            if cell.c == '@' && cell.adj < 4 {
-                removable += 1;
-                cell.c = 'x';
+    let mut removable_coords = Vec::<(i32, i32)>::new();
+    for i in 0..total {
+        let cell = input.grid[i];
+        if cell.c == '@' && cell.adj < 4 {
+            let x0 = i as i32 % width;
+            let y0 = i as i32 / width;
 
-                // OPT: update adjacent cell's adj count
-                let x0 = i as i32 % width as i32;
-                let y0 = i as i32 / width as i32;
-                for (x1, y1) in DIRECTIONS {
-                    if x0 + x1 >= 0
-                        && x0 + x1 < width as i32
-                        && y0 + y1 >= 0
-                        && y0 + y1 < height as i32
-                    {
-                        let j = ((y0 + y1) * width as i32 + (x0 + x1)) as usize;
-                        if input.grid[j].c == '@' && input.grid[j].adj > 0 {
-                            input.grid[j].adj -= 1;
-                        }
+            removable_coords.push((x0, y0));
+        }
+    }
+
+    while let Some((x0, y0)) = removable_coords.pop() {
+        sum += 1;
+
+        let i = y0 * width + x0;
+        let cell = &mut input.grid[i as usize];
+        cell.c = 'x';
+
+        // update adjacent cell's adj count
+        for (x1, y1) in DIRECTIONS {
+            // inbounds
+            let xj = x0 + x1;
+            let yj = y0 + y1;
+
+            if xj >= 0 && xj < width && yj >= 0 && yj < height {
+                let j = ((yj) * width + (xj)) as usize;
+
+                if input.grid[j].c == '@' && input.grid[j].adj > 0 {
+                    input.grid[j].adj -= 1;
+                    if input.grid[j].adj == 3 {
+                        removable_coords.push((xj, yj));
                     }
                 }
-
-                i = 0.max((i as i32 - width as i32 - 1) as usize);
-            } else {
-                i += 1
             }
-        }
-
-        sum += removable;
-
-        if removable == 0 {
-            break;
         }
     }
 
