@@ -82,5 +82,18 @@ macro_rules! solution {
 }
 
 pub fn all_solutions() -> Vec<Solution> {
-    vec![solution!(day01), solution!(day02), solution!(day03)]
+    vec![
+        solution!(day01),
+        solution!(day02),
+        solution!(day03),
+        solution!(day04),
+        // solution!(day05),
+        // solution!(day06),
+        // solution!(day07),
+        // solution!(day08),
+        // solution!(day09),
+        // solution!(day010),
+        // solution!(day011),
+        // solution!(day012),
+    ]
 }
